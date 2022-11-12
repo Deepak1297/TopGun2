@@ -13,13 +13,17 @@
     {%endif%}
   </div>
   <div class="content-section">
-    <img
-      class="rounded-circle account-img"
-      src="{{ user.profile.image.url }}"
-    />
+    <img class="image-placeholder" src="{{ user.profile.image.url }}" />
     <div class="media-body">
       <h2 class="account-heading">{{ user.username }}</h2>
     </div>
+  </div>
+</div>
+<div class="nav-container">
+  <div class="nav">
+    <a class="active" href="#home">Home</a>
+    <a href="{% url 'tasks' %}">To-Do List</a>
+    <a href="{% url 'gallery' %}">Gallery</a>
   </div>
 </div>
 {% endblock content %}

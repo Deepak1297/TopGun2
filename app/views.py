@@ -5,13 +5,15 @@ from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
+from .forms import UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 
-from .models import Task, Profile
+from .models import Task, Profile, Photo, Category
 
 
 # Create your views here.
@@ -19,6 +21,26 @@ from .models import Task, Profile
 def profile(request, username):
     user = get_object_or_404(user, username=username)
     profile = get_object_or_404(Profile, user=user)
+
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been updated!')
+            return redirect('profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
     return render(request, 'app/profile.html', {'profile': profile, 'user': user})
 
 
@@ -101,3 +123,56 @@ class DeleteView(LoginRequiredMixin, DeleteView):
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
     template_name = "app/task_confirm_delete.html"
+
+
+@login_required(login_url='login')
+def gallery(request):
+    user = request.user
+    category = request.GET.get('category')
+    if category == None:
+        photos = Photo.objects.filter(category__user=user)
+    else:
+        photos = Photo.objects.filter(
+            category__name=category, category__user=user)
+
+    categories = Category.objects.filter(user=user)
+    context = {'categories': categories, 'photos': photos}
+    return render(request, 'app/gallery.html', context)
+
+
+@login_required(login_url='login')
+def viewPhoto(request, pk):
+    photo = Photo.objects.get(id=pk)
+    return render(request, 'app/photo.html', {'photo': photo})
+
+
+@login_required(login_url='login')
+def addPhoto(request):
+    user = request.user
+
+    categories = user.category_set.all()
+
+    if request.method == 'POST':
+        data = request.POST
+        images = request.FILES.getlist('images')
+
+        if data['category'] != 'none':
+            category = Category.objects.get(id=data['category'])
+        elif data['category_new'] != '':
+            category, created = Category.objects.get_or_create(
+                user=user,
+                name=data['category_new'])
+        else:
+            category = None
+
+        for image in images:
+            photo = Photo.objects.create(
+                category=category,
+                description=data['description'],
+                image=image,
+            )
+
+        return redirect('gallery')
+
+    context = {'categories': categories}
+    return render(request, 'app/add_image.html', context)

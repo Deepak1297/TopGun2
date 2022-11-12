@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, Profile
+from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, Profile, ProfileView
 from django.contrib.auth.views import LogoutView
+from . import views
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -10,7 +11,7 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('register/', RegisterPage.as_view(), name='register'),
-    path('profile/', Profile, name='profile'),
+    path('profile/', ProfileView.profile, name='profile'),
 
 
     path('', TaskList.as_view(), name='tasks'),
@@ -18,6 +19,10 @@ urlpatterns = [
     path('create-task/', TaskCreate.as_view(), name='task-create'),
     path('task-update/<int:pk>/', TaskUpdate.as_view(), name='task-update'),
     path('task-delete/<int:pk>/', DeleteView.as_view(), name='task-delete'),
+
+    path('gallery', views.gallery, name='gallery'),
+    path('photo/<str:pk>/', views.viewPhoto, name='photo'),
+    path('add_image/', views.addPhoto, name='add_image'),
 ]
 
 if settings.DEBUG:
