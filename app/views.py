@@ -17,6 +17,10 @@ from .models import Task, Profile, Photo, Category
 
 
 # Create your views here.
+# def homeView(request):
+# return render(request, 'app/profile.html')
+
+
 @login_required
 def profile(request, username):
     user = get_object_or_404(user, username=username)
@@ -176,3 +180,22 @@ def addPhoto(request):
 
     context = {'categories': categories}
     return render(request, 'app/add_image.html', context)
+
+
+def editImage(request, pk):
+    Photo = Category.objects.get(id=pk)
+
+    if request.method == "POST":
+        if len(request.FILES) != 0:
+            if len(Photo.image) > 0:
+                os.remove(Photo.image.path)
+            Photo.image = request.FILES['image']
+        Photo.name = request.POST.get('name')
+        Photo.description = request.POST.get('description')
+        Photo.category = request.POST.get('category')
+        Photo.save()
+        messages.success(request, "Photo Updated Successfully")
+        return redirect('/')
+
+    context = {'Photo': Photo}
+    return render(request, 'app/edit_image.html', context)

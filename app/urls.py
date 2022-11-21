@@ -14,7 +14,8 @@ urlpatterns = [
     path('profile/', ProfileView.profile, name='profile'),
 
 
-    path('', TaskList.as_view(), name='tasks'),
+    path('', ProfileView.profile, name='profile'),
+    path('tasks', TaskList.as_view(), name='tasks'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('create-task/', TaskCreate.as_view(), name='task-create'),
     path('task-update/<int:pk>/', TaskUpdate.as_view(), name='task-update'),
@@ -23,6 +24,7 @@ urlpatterns = [
     path('gallery', views.gallery, name='gallery'),
     path('photo/<str:pk>/', views.viewPhoto, name='photo'),
     path('add_image/', views.addPhoto, name='add_image'),
+    path('edit_image/<str:pk>', views.editImage, name="edit_image"),
 ]
 
 if settings.DEBUG:
