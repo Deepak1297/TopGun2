@@ -151,3 +151,22 @@ def viewPhoto(request, pk):
 
 
 
+
+
+def editImage(request, pk):
+    Photo = Category.objects.get(id=pk)
+
+    if request.method == "POST":
+        if len(request.FILES) != 0:
+            if len(Photo.image) > 0:
+                os.remove(Photo.image.path)
+            Photo.image = request.FILES['image']
+        Photo.name = request.POST.get('name')
+        Photo.description = request.POST.get('description')
+        Photo.category = request.POST.get('category')
+        Photo.save()
+        messages.success(request, "Photo Updated Successfully")
+        return redirect('/')
+
+    context = {'Photo': Photo}
+    return render(request, 'app/edit_image.html', context)
