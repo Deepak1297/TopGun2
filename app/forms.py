@@ -20,7 +20,3 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['username', 'email']
 
 
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['image']
