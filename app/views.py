@@ -150,6 +150,36 @@ def viewPhoto(request, pk):
     return render(request, 'app/photo.html', {'photo': photo})
 
 
+@login_required(login_url='login')
+def addPhoto(request):
+    user = request.user
+
+    categories = user.category_set.all()
+
+    if request.method == 'POST':
+        data = request.POST
+        images = request.FILES.getlist('images')
+
+        if data['category'] != 'none':
+            category = Category.objects.get(id=data['category'])
+        elif data['category_new'] != '':
+            category, created = Category.objects.get_or_create(
+                user=user,
+                name=data['category_new'])
+        else:
+            category = None
+
+        for image in images:
+            photo = Photo.objects.create(
+                category=category,
+                description=data['description'],
+                image=image,
+            )
+
+        return redirect('gallery')
+
+    context = {'categories': categories}
+    return render(request, 'app/add_image.html', context)
 
 
 
