@@ -22,6 +22,8 @@ urlpatterns = [
     path('task-delete/<int:pk>/', DeleteView.as_view(), name='task-delete'),
 
 
+    path('gallery', views.gallery, name='gallery'),
+    path('add_image/', views.addPhoto, name='add_image'),
 ]
 
 if settings.DEBUG:
