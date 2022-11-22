@@ -23,7 +23,9 @@ urlpatterns = [
 
 
     path('gallery', views.gallery, name='gallery'),
+    path('photo/<str:pk>/', views.viewPhoto, name='photo'),
     path('add_image/', views.addPhoto, name='add_image'),
+    path('edit_image/<str:pk>', views.editImage, name="edit_image"),
 ]
 
 if settings.DEBUG:
