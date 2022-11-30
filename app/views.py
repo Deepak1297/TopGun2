@@ -182,6 +182,7 @@ def addPhoto(request):
     return render(request, 'app/add_image.html', context)
 
 
+
 def editImage(request, pk):
     Photo = Category.objects.get(id=pk)
 
