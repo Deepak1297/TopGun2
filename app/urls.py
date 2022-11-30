@@ -25,6 +25,8 @@ urlpatterns = [
     path('photo/<str:pk>/', views.viewPhoto, name='photo'),
     path('add_image/', views.addPhoto, name='add_image'),
     path('edit_image/<str:pk>', views.editImage, name="edit_image"),
+    path('image_confirm_delete/',
+         views.image_delete, name="image_confirm_delete"),
 ]
 
 if settings.DEBUG:

@@ -199,3 +199,16 @@ def editImage(request, pk):
 
     context = {'Photo': Photo}
     return render(request, 'app/edit_image.html', context)
+
+
+def search(request):
+    print(request.GET)
+    return render(request, 'app/gallery.html')
+
+
+def image_delete(request):
+    model = Photo
+    context_object_name = 'photo'
+    success_url = reverse_lazy('gallery')
+    template_name = "app/image_confirm_delete.html"
+    return render(request, 'app/image_confirm_delete.html')

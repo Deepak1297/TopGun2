@@ -15,7 +15,15 @@
     <div class="container">
       <div class="row">
           <div class="card">
-            <div class="card-header">Categories</div>
+            <div class="card-header">Categories
+              <div id="search-add-wrapper">
+                <form method="GET" style="display: flex; margin-top: 10px">
+                  {% csrf_token %}
+                  <input type="text" name="search-area" value="{{search_input}}" />
+                  <input class="button" type="submit" value="Search" />
+                </form>
+              </div>
+            </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
                 <a href="{% url 'gallery' %}">All</a>
